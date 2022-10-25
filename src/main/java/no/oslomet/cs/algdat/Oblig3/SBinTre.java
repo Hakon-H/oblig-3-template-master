@@ -1,10 +1,7 @@
 package no.oslomet.cs.algdat.Oblig3;
 
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Objects;
-import java.util.StringJoiner;
+import java.util.*;
 
 public class SBinTre<T> {
     private static final class Node<T>   // en indre nodeklasse
@@ -39,7 +36,11 @@ public class SBinTre<T> {
 
     private final Comparator<? super T> comp;       // komparator
 
-    int antallAvVerdi = 0; //Brukes i oppgave 2
+
+    //Egendefinerte hjelpevariabler
+    private int antallAvVerdi = 0; //Brukes i oppgave 2
+    private static Node firstPost;
+    private StringBuilder strRec;
 
     public SBinTre(Comparator<? super T> c)    // konstruktør
     {
@@ -140,15 +141,45 @@ public class SBinTre<T> {
     }
 
     private static <T> Node<T> førstePostorden(Node<T> p) {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        //throw new UnsupportedOperationException("Ikke kodet ennå!");
+        if(p == null) return null;
+
+        while(true){
+            //Første node i post-orden vil være den første som ikke har noen barn (der både venstre og høyre er null
+            if(p.venstre != null) p = p.venstre;
+            else if(p.høyre != null) p = p.høyre;
+            else{
+                return p;
+            }
+        }
     }
 
     private static <T> Node<T> nestePostorden(Node<T> p) {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        //throw new UnsupportedOperationException("Ikke kodet ennå!");
+        if(p == null) return null;
+        Node forelderNode = p.forelder;
+        if(forelderNode == null) return null;
+        //Hvis høyre barnet til forelderen er enten null eller noden p, betyr det at noden som kommer etter er forelderen.
+        if(forelderNode.høyre == null || forelderNode.høyre == p) return forelderNode;
+
+        //Men hvis forelderen har et annet høyre barn (p noden er venstre barnet) vil den neste bli noden som ligger lengst til venstre i treet
+        Node tmp = forelderNode.høyre;
+        while(tmp.venstre != null) tmp = tmp.venstre;
+        return tmp;
     }
 
     public void postorden(Oppgave<? super T> oppgave) {
         throw new UnsupportedOperationException("Ikke kodet ennå!");
+        /*
+        StringBuilder str = new StringBuilder();
+        Node tmp = rot;
+
+        while(tmp != null){
+            str.append(" " + tmp.verdi);
+            tmp = nestePostorden(tmp);
+        }
+
+        */
     }
 
     public void postordenRecursive(Oppgave<? super T> oppgave) {
@@ -160,11 +191,28 @@ public class SBinTre<T> {
     }
 
     public ArrayList<T> serialize() {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        //throw new UnsupportedOperationException("Ikke kodet ennå!");
+        ArrayList<T> output = new ArrayList<T>();
+        Deque<Node> deque = new LinkedList<Node>();
+        deque.add(rot);
+        while(!deque.isEmpty()){
+            Node tmp = deque.poll();
+            output.add((T) tmp.verdi);
+            if(tmp.venstre != null) deque.add(tmp.venstre);
+            if(tmp.høyre != null) deque.add(tmp.høyre);
+        }
+        return output;
     }
 
     static <K> SBinTre<K> deserialize(ArrayList<K> data, Comparator<? super K> c) {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        //throw new UnsupportedOperationException("Ikke kodet ennå!");
+        SBinTre<Integer> output = new SBinTre<>(Comparator.naturalOrder());
+
+        for(K a : data){
+            output.leggInn((Integer) a);
+        }
+
+        return (SBinTre<K>) output;
     }
 
 
