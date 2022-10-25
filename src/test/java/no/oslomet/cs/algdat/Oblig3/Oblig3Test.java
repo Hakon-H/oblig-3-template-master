@@ -77,6 +77,7 @@ public class Oblig3Test {
                 || tre.antall(3) != 1 || tre.antall(2) != 0
                 || tre.antall(1) != 7 || tre.antall(0) != 0) {
             antallFeil++;
+            System.out.println(tre.antall(3));
             System.out.println("Oppgave 2c: Feil antall(T)-metoden!");
         }
 
