@@ -39,8 +39,6 @@ public class SBinTre<T> {
 
     //Egendefinerte hjelpevariabler
     private int antallAvVerdi = 0; //Brukes i oppgave 2
-    private static Node firstPost;
-    private StringBuilder strRec;
 
     public SBinTre(Comparator<? super T> c)    // konstruktør
     {
@@ -111,6 +109,7 @@ public class SBinTre<T> {
         else q.høyre = p;                        // høyre barn til q
 
         antall++;                                // én verdi mer i treet
+        endringer++;
         return true;                             // vellykket innlegging
     }
 
@@ -153,6 +152,7 @@ public class SBinTre<T> {
         }
 
         antall--;   // det er nå én node mindre i treet
+        endringer++;
         return true;
     }
 
@@ -195,6 +195,7 @@ public class SBinTre<T> {
         node.høyre = null;
         node.venstre = null;
         antall--;
+        endringer++;
     }
 
     private static <T> Node<T> førstePostorden(Node<T> p) {
