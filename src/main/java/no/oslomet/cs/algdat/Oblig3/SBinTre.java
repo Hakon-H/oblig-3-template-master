@@ -262,14 +262,13 @@ public class SBinTre<T> {
 
     static <K> SBinTre<K> deserialize(ArrayList<K> data, Comparator<? super K> c) {
         //throw new UnsupportedOperationException("Ikke kodet ennå!");
-        SBinTre<Integer> output = new SBinTre<>(Comparator.naturalOrder());
+        SBinTre<K> output = new SBinTre<>(c);
 
         for(K a : data){
-            output.leggInn((Integer) a);
+            output.leggInn(a);
         }
 
-        return (SBinTre<K>) output;
+        return output;
     }
-
 
 } // ObligSBinTre
