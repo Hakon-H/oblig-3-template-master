@@ -182,7 +182,19 @@ public class SBinTre<T> {
     }
 
     public void nullstill() {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        //throw new UnsupportedOperationException("Ikke kodet ennå!");
+        nullstill(rot);
+        rot = null;
+    }
+
+    private void nullstill(Node node){
+        if(node == null) return;
+        nullstill(node.venstre);
+        nullstill(node.høyre);
+        node.forelder = null;
+        node.høyre = null;
+        node.venstre = null;
+        antall--;
     }
 
     private static <T> Node<T> førstePostorden(Node<T> p) {
