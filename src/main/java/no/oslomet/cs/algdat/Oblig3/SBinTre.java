@@ -115,11 +115,56 @@ public class SBinTre<T> {
     }
 
     public boolean fjern(T verdi) {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        //throw new UnsupportedOperationException("Ikke kodet ennå!");
+        if (verdi == null) return false;  // treet har ingen nullverdier
+
+        Node<T> p = rot, q = null;   // q skal være forelder til p
+
+        while (p != null)            // leter etter verdi
+        {
+            int cmp = comp.compare(verdi,p.verdi);      // sammenligner
+            if (cmp < 0) { q = p; p = p.venstre; }      // går til venstre
+            else if (cmp > 0) { q = p; p = p.høyre; }   // går til høyre
+            else break;    // den søkte verdien ligger i p
+        }
+        if (p == null) return false;   // finner ikke verdi
+
+        if (p.venstre == null || p.høyre == null)  // Tilfelle 1) og 2)
+        {
+            Node<T> b = p.venstre != null ? p.venstre : p.høyre;  // b for barn
+            if (p == rot) rot = b;
+            else if (p == q.venstre) q.venstre = b;
+            else q.høyre = b;
+            if(b != null) b.forelder = q;
+        }
+        else  // Tilfelle 3)
+        {
+            Node<T> s = p, r = p.høyre;   // finner neste i inorden
+            while (r.venstre != null)
+            {
+                s = r;    // s er forelder til r
+                r = r.venstre;
+            }
+
+            p.verdi = r.verdi;   // kopierer verdien i r til p
+
+            if (s != p) s.venstre = r.høyre;
+            else s.høyre = r.høyre;
+        }
+
+        antall--;   // det er nå én node mindre i treet
+        return true;
     }
 
     public int fjernAlle(T verdi) {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        //throw new UnsupportedOperationException("Ikke kodet ennå!");
+        int antallFjernet = 0;
+        while(true){
+            boolean finnes = fjern(verdi);
+            if(!finnes) break;
+            else antallFjernet++;
+        }
+        return antallFjernet;
     }
 
     public int antall(T verdi) {
@@ -157,15 +202,14 @@ public class SBinTre<T> {
     private static <T> Node<T> nestePostorden(Node<T> p) {
         //throw new UnsupportedOperationException("Ikke kodet ennå!");
         if(p == null) return null;
+
         Node forelderNode = p.forelder;
         if(forelderNode == null) return null;
-        //Hvis høyre barnet til forelderen er enten null eller noden p, betyr det at noden som kommer etter er forelderen.
+        //Hvis høyre barnet til forelderen er enten null eller noden p, betyr det at noden som kommer etter i post-orden er forelderen.
         if(forelderNode.høyre == null || forelderNode.høyre == p) return forelderNode;
 
-        //Men hvis forelderen har et annet høyre barn (p noden er venstre barnet) vil den neste bli noden som ligger lengst til venstre i treet
         Node tmp = forelderNode.høyre;
-        while(tmp.venstre != null) tmp = tmp.venstre;
-        return tmp;
+        return førstePostorden(tmp);
     }
 
     public void postorden(Oppgave<? super T> oppgave) {
