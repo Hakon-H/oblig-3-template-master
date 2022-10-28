@@ -39,6 +39,7 @@ public class SBinTre<T> {
 
     //Egendefinerte hjelpevariabler
     private int antallAvVerdi = 0; //Brukes i oppgave 2
+    private ArrayList<Node> nodeListe = new ArrayList<Node>(); //Brukes i oppgave 6, fjernAlle
 
     public SBinTre(Comparator<? super T> c)    // konstruktør
     {
@@ -128,6 +129,38 @@ public class SBinTre<T> {
         }
         if (p == null) return false;   // finner ikke verdi
 
+        //Flyttet resten av koden til en egen metode siden den samme koden blir brukt i fjernAlle
+        fjernHjelper(p, q);
+
+        antall--;   // det er nå én node mindre i treet
+        endringer++;
+        return true;
+    }
+
+    public int fjernAlle(T verdi) {
+        //throw new UnsupportedOperationException("Ikke kodet ennå!");
+        nodeListe = new ArrayList<Node>();
+        finnNoder(rot, verdi);
+
+        for(Node p : nodeListe){
+            Node q = p.forelder != null ? p.forelder : null;
+            fjernHjelper(p, q);
+        }
+
+        return nodeListe.size();
+
+        /*
+        int antallFjernet = 0;
+        while(true){
+            boolean finnes = fjern(verdi);
+            if(!finnes) break;
+            else antallFjernet++;
+        }
+        return antallFjernet;
+         */
+    }
+
+    private void fjernHjelper(Node p, Node q) {
         if (p.venstre == null || p.høyre == null)  // Tilfelle 1) og 2)
         {
             Node<T> b = p.venstre != null ? p.venstre : p.høyre;  // b for barn
@@ -150,21 +183,13 @@ public class SBinTre<T> {
             if (s != p) s.venstre = r.høyre;
             else s.høyre = r.høyre;
         }
-
-        antall--;   // det er nå én node mindre i treet
-        endringer++;
-        return true;
     }
 
-    public int fjernAlle(T verdi) {
-        //throw new UnsupportedOperationException("Ikke kodet ennå!");
-        int antallFjernet = 0;
-        while(true){
-            boolean finnes = fjern(verdi);
-            if(!finnes) break;
-            else antallFjernet++;
-        }
-        return antallFjernet;
+    private void finnNoder (Node node, T verdi){
+        if(node == null) return;
+        if(node.verdi.equals(verdi)) nodeListe.add(node);
+        finnNoder(node.venstre, verdi);
+        finnNoder(node.høyre, verdi);
     }
 
     public int antall(T verdi) {
